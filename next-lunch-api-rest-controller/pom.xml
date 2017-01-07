@@ -1,0 +1,92 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<artifactId>next-lunch-api-rest-controller</artifactId>
+	<packaging>war</packaging>
+
+	<properties>
+		<com.next.lunch.api.version>0.0.1</com.next.lunch.api.version>
+		<spring.framework.version>4.1.2.RELEASE</spring.framework.version>
+		<spring.hateoas.version>0.20.0.RELEASE</spring.hateoas.version>
+		<log4j.version>2.6.1</log4j.version>
+		<servlet.api.version>3.0.1</servlet.api.version>
+	</properties>
+
+	<parent>
+		<groupId>com.next.lunch.api</groupId>
+		<artifactId>next-lunch-api</artifactId>
+		<version>0.0.1</version>
+		<relativePath>../pom.xml</relativePath>
+	</parent>
+
+	<dependencies>
+
+		<!-- NextLunch API -->
+		<dependency>
+			<groupId>com.next.lunch.api</groupId>
+			<artifactId>next-lunch-api-service</artifactId>
+			<version>${com.next.lunch.api.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+		<!-- Spring MVC -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${spring.framework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.hateoas</groupId>
+			<artifactId>spring-hateoas</artifactId>
+			<version>${spring.hateoas.version}</version>
+		</dependency>
+
+
+		<!-- Log4J -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-core</artifactId>
+			<version>${log4j.version}</version>
+		</dependency>
+
+		<!-- Servlet API -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet.api.version}</version>
+			<scope>compile</scope>
+		</dependency>
+
+	</dependencies>
+
+
+	<build>
+		<finalName>nextlunchapi</finalName>
+
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.3</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<attachClasses>true</attachClasses>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>

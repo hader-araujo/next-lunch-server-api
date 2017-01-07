@@ -1,0 +1,28 @@
+*.log
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
+
+### Maven ###
+*/target
+
+### Eclipse ###
+.classpath
+.project
+*.pydevproject
+.metadata
+.gradle
+bin/
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+Servers
