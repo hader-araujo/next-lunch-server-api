@@ -8,11 +8,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -82,20 +82,20 @@ public class VoteServiceTest_Vote {
 		vote.setRestaurant(restaurant);
 		vote.setUser(user);
 		vote.setDay(day16);
-		when(repository.getWinnerOfDay(day16)).thenReturn(vote);
+		when(repository.findByDay(day16)).thenReturn(Arrays.asList(vote));
 
 		Date day19 = getDay(19);
 		vote = new Vote();
 		vote.setRestaurant(restaurant);
 		vote.setUser(user);
 		vote.setDay(day19);
-		when(repository.getWinnerOfDay(day19)).thenReturn(vote);
+		when(repository.findByDay(day19)).thenReturn(Arrays.asList(vote));
 
-		when(repository.getWinnerOfDay(getDay(15))).thenReturn(null);
-		when(repository.getWinnerOfDay(getDay(17))).thenReturn(null);
-		when(repository.getWinnerOfDay(getDay(18))).thenReturn(null);
-		when(repository.getWinnerOfDay(getDay(20))).thenReturn(null);
-		when(repository.getWinnerOfDay(getDay(21))).thenReturn(null);
+		when(repository.findByDay(getDay(15))).thenReturn(null);
+		when(repository.findByDay(getDay(17))).thenReturn(null);
+		when(repository.findByDay(getDay(18))).thenReturn(null);
+		when(repository.findByDay(getDay(20))).thenReturn(null);
+		when(repository.findByDay(getDay(21))).thenReturn(null);
 
 		service.vote(restaurantId, userId, day);
 	}
@@ -122,13 +122,13 @@ public class VoteServiceTest_Vote {
 		when(restaurantService.findOne(restaurantId)).thenReturn(restaurantDTO);
 		when(userService.findOne(userId)).thenReturn(userDTO);
 
-		when(repository.getWinnerOfDay(getDay(15))).thenReturn(null);
-		when(repository.getWinnerOfDay(getDay(16))).thenReturn(null);
-		when(repository.getWinnerOfDay(getDay(17))).thenReturn(null);
-		when(repository.getWinnerOfDay(getDay(18))).thenReturn(null);
-		when(repository.getWinnerOfDay(getDay(19))).thenReturn(null);
-		when(repository.getWinnerOfDay(getDay(20))).thenReturn(null);
-		when(repository.getWinnerOfDay(getDay(21))).thenReturn(null);
+		when(repository.findByDay(getDay(15))).thenReturn(null);
+		when(repository.findByDay(getDay(16))).thenReturn(null);
+		when(repository.findByDay(getDay(17))).thenReturn(null);
+		when(repository.findByDay(getDay(18))).thenReturn(null);
+		when(repository.findByDay(getDay(19))).thenReturn(null);
+		when(repository.findByDay(getDay(20))).thenReturn(null);
+		when(repository.findByDay(getDay(21))).thenReturn(null);
 
 		VoteDTO dto = service.vote(restaurantId, userId, day);
 

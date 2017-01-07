@@ -2,8 +2,12 @@ package com.nextlunch.api.service;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -18,6 +22,7 @@ import com.nextlunch.api.repository.VoteJpaRepository;
 import com.nextlunch.api.service.dto.RestaurantDTO;
 import com.nextlunch.api.service.dto.UserDTO;
 import com.nextlunch.api.service.dto.VoteDTO;
+import com.nextlunch.api.service.dto.WinnerDTO;
 import com.nextlunch.api.service.exception.CreateException;
 import com.nextlunch.api.service.exception.ReadException;
 import com.nextlunch.api.service.exception.enums.CreateExceptionMessageEnum;
@@ -52,16 +57,32 @@ public class VoteServiceImpl implements VoteService {
 	}
 
 	@Override
-	public VoteDTO getWinnerOfDay(Date day) throws ReadException {
+	public WinnerDTO getWinnerOfDay(Date day) throws ReadException {
 		try {
 
 			if (day == null) {
 				throw new ReadException(ReadExceptionMessageEnum.DATE_NULL_EXCEPTION);
 			}
 
-			Vote vote = repository.getWinnerOfDay(day);
+			List<Vote> voteList = repository.findByDay(day);
 
-			return vote == null ? null : new VoteDTO(vote);
+			if (voteList == null) {
+				return null;
+			}
+
+			Map<Restaurant, Long> sortedMap = new LinkedHashMap<>();
+
+			// TODO chage it putting this in database search
+			voteList.stream().collect(Collectors.groupingByConcurrent(Vote::getRestaurant, Collectors.counting()))
+					.entrySet().stream().sorted(Map.Entry.<Restaurant, Long> comparingByValue().reversed())
+					.forEachOrdered(e -> sortedMap.put(e.getKey(), e.getValue()));
+
+			WinnerDTO winnerList = sortedMap.entrySet().stream()
+					.filter(p -> p.getValue() == sortedMap.values().iterator().next())
+					.map(f -> new WinnerDTO(f.getKey().getId(), f.getKey().getName(), f.getValue()))
+					.sorted(Comparator.comparing(WinnerDTO::getRestaurantName)).collect(Collectors.toList()).get(0);
+
+			return winnerList;
 		} catch (Exception e) {
 			if (e instanceof ReadException
 					&& e.getMessage().equals(ReadExceptionMessageEnum.DATE_NULL_EXCEPTION.name())) {
@@ -104,21 +125,19 @@ public class VoteServiceImpl implements VoteService {
 	}
 
 	@Override
-	public List<VoteDTO> getWinnersOfWeek(Date day) throws ReadException {
+	public List<WinnerDTO> getWinnersOfWeek(Date day) throws ReadException {
 		try {
 			if (day == null) {
 				throw new ReadException(ReadExceptionMessageEnum.DATE_NULL_EXCEPTION);
 			}
 			List<Date> days = getDaysOfWeek(day);
 
-			List<VoteDTO> winners = new ArrayList<>();
+			List<WinnerDTO> winners = new ArrayList<>();
 
 			for (Date dayOfWeek : days) {
-				if (dayOfWeek != null) {
-					VoteDTO v = getWinnerOfDay(dayOfWeek);
-					if (v != null) {
-						winners.add(v);
-					}
+				WinnerDTO v = getWinnerOfDay(dayOfWeek);
+				if (v != null) {
+					winners.add(v);
 				}
 			}
 
@@ -135,7 +154,7 @@ public class VoteServiceImpl implements VoteService {
 	@Transactional(readOnly = false)
 	public VoteDTO vote(Long restaurantId, Long userId, Date day) throws CreateException {
 		try {
-			
+
 			Calendar c = Calendar.getInstance();
 			c.setTime(day);
 			c.set(Calendar.HOUR_OF_DAY, 0);
@@ -143,7 +162,7 @@ public class VoteServiceImpl implements VoteService {
 			c.set(Calendar.SECOND, 0);
 			c.set(Calendar.MILLISECOND, 0);
 			day = c.getTime();
-			
+
 			if (isDateExists(restaurantId, day)) {
 				throw new CreateException(CreateExceptionMessageEnum.VOTE_SAME_WEEK_EXCEPTION);
 			}
@@ -167,8 +186,8 @@ public class VoteServiceImpl implements VoteService {
 	}
 
 	private boolean isDateExists(Long restaurantId, Date day) throws ReadException {
-		List<VoteDTO> winners = getWinnersOfWeek(day);
-		
+		List<WinnerDTO> winners = getWinnersOfWeek(day);
+
 		return winners.stream().filter(p -> p.getRestaurantId().equals(restaurantId)).findAny().isPresent();
 	}
 

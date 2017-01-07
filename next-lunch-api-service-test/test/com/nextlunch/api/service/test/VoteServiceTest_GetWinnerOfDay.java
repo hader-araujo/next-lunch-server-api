@@ -10,6 +10,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -26,7 +27,7 @@ import com.nextlunch.api.service.RestaurantService;
 import com.nextlunch.api.service.UserService;
 import com.nextlunch.api.service.VoteService;
 import com.nextlunch.api.service.VoteServiceImpl;
-import com.nextlunch.api.service.dto.VoteDTO;
+import com.nextlunch.api.service.dto.WinnerDTO;
 import com.nextlunch.api.service.exception.ReadException;
 import com.nextlunch.api.service.exception.enums.ReadExceptionMessageEnum;
 
@@ -68,24 +69,23 @@ public class VoteServiceTest_GetWinnerOfDay {
 		vote.setUser(user);
 		vote.setDay(day);
 		
-		when(repository.getWinnerOfDay(day)).thenReturn(vote);
+		when(repository.findByDay(day)).thenReturn(Arrays.asList(vote));
 
-		VoteDTO dto = service.getWinnerOfDay(day);
+		WinnerDTO dto = service.getWinnerOfDay(day);
 
-		verify(repository, times(1)).getWinnerOfDay(day);
+		verify(repository, times(1)).findByDay(day);
 		assertThat("DTO should not be null", dto, notNullValue());
 		assertThat("Service should return the restaurant", dto.getRestaurantId(), equalTo(restaurantId));
-		assertThat("Service should return the user", dto.getUserId(), equalTo(userId));
-		assertThat("Service should return the day", dto.getDay(), equalTo(day));
+		assertThat("Service should return one quantity", dto.getQuantity(), equalTo(1L));
 	}
 
 	@Test
 	public void getWinnerOfDay_DontExistWinnerShouldReturnNull() throws ReadException {
-		when(repository.getWinnerOfDay(day)).thenReturn(null);
+		when(repository.findByDay(day)).thenReturn(null);
 
-		VoteDTO dto = service.getWinnerOfDay(day);
+		WinnerDTO dto = service.getWinnerOfDay(day);
 
-		verify(repository, times(1)).getWinnerOfDay(day);
+		verify(repository, times(1)).findByDay(day);
 		assertThat("DTO should not be null", dto, nullValue());
 	}
 
@@ -102,7 +102,7 @@ public class VoteServiceTest_GetWinnerOfDay {
 		thrown.expect(ReadException.class);
 		thrown.expectMessage(ReadExceptionMessageEnum.UNEXPECTED_EXCEPTION.name());
 
-		when(repository.getWinnerOfDay(any(Date.class))).thenThrow(new RuntimeException());
+		when(repository.findByDay(any(Date.class))).thenThrow(new RuntimeException());
 
 		service.getWinnerOfDay(day);
 	}

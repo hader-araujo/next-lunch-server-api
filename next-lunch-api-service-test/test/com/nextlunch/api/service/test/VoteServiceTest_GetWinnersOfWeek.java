@@ -11,6 +11,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -28,7 +29,7 @@ import com.nextlunch.api.service.RestaurantService;
 import com.nextlunch.api.service.UserService;
 import com.nextlunch.api.service.VoteService;
 import com.nextlunch.api.service.VoteServiceImpl;
-import com.nextlunch.api.service.dto.VoteDTO;
+import com.nextlunch.api.service.dto.WinnerDTO;
 import com.nextlunch.api.service.exception.ReadException;
 import com.nextlunch.api.service.exception.enums.ReadExceptionMessageEnum;
 
@@ -38,7 +39,7 @@ public class VoteServiceTest_GetWinnersOfWeek {
 	private UserService userService;
 	private VoteService service;
 
-	private String propertyDay = "day";
+	private String propertyQuantity = "quantity";
 
 	private Long restaurantId = 1L;
 	private Long userId = 2L;
@@ -84,43 +85,43 @@ public class VoteServiceTest_GetWinnersOfWeek {
 		vote.setRestaurant(restaurant);
 		vote.setUser(user);
 		vote.setDay(day15);
-		when(repository.getWinnerOfDay(day15)).thenReturn(vote);
+		when(repository.findByDay(day15)).thenReturn(Arrays.asList(vote));
 
 		vote = new Vote();
 		vote.setRestaurant(restaurant);
 		vote.setUser(user);
 		vote.setDay(day19);
-		when(repository.getWinnerOfDay(day19)).thenReturn(vote);
+		when(repository.findByDay(day19)).thenReturn(Arrays.asList(vote));
 
-		when(repository.getWinnerOfDay(day16)).thenReturn(null);
-		when(repository.getWinnerOfDay(day17)).thenReturn(null);
-		when(repository.getWinnerOfDay(day18)).thenReturn(null);
-		when(repository.getWinnerOfDay(day20)).thenReturn(null);
-		when(repository.getWinnerOfDay(day21)).thenReturn(null);
+		when(repository.findByDay(day16)).thenReturn(null);
+		when(repository.findByDay(day17)).thenReturn(null);
+		when(repository.findByDay(day18)).thenReturn(null);
+		when(repository.findByDay(day20)).thenReturn(null);
+		when(repository.findByDay(day21)).thenReturn(null);
 
-		List<VoteDTO> dtoList = service.getWinnersOfWeek(day);
+		List<WinnerDTO> dtoList = service.getWinnersOfWeek(day);
 
-		verify(repository, times(7)).getWinnerOfDay(any(Date.class));
+		verify(repository, times(7)).findByDay(any(Date.class));
 		assertThat("The list should has 2 elements", dtoList, hasSize(2));
 
-		assertThat("The return is wrong", dtoList, hasItem(hasProperty(propertyDay, equalTo(day15))));
-		assertThat("The return is wrong", dtoList, hasItem(hasProperty(propertyDay, equalTo(day19))));
+		assertThat("The return is wrong", dtoList, hasItem(hasProperty(propertyQuantity, equalTo(1L))));
+		assertThat("The return is wrong", dtoList, hasItem(hasProperty(propertyQuantity, equalTo(1L))));
 	}
 
 	@Test
 	public void getWinnersOfWeek_DontExistWinnerShouldReturnNull() throws ReadException {
 		setDays();
-		when(repository.getWinnerOfDay(day15)).thenReturn(null);
-		when(repository.getWinnerOfDay(day16)).thenReturn(null);
-		when(repository.getWinnerOfDay(day17)).thenReturn(null);
-		when(repository.getWinnerOfDay(day18)).thenReturn(null);
-		when(repository.getWinnerOfDay(day19)).thenReturn(null);
-		when(repository.getWinnerOfDay(day20)).thenReturn(null);
-		when(repository.getWinnerOfDay(day21)).thenReturn(null);
+		when(repository.findByDay(day15)).thenReturn(null);
+		when(repository.findByDay(day16)).thenReturn(null);
+		when(repository.findByDay(day17)).thenReturn(null);
+		when(repository.findByDay(day18)).thenReturn(null);
+		when(repository.findByDay(day19)).thenReturn(null);
+		when(repository.findByDay(day20)).thenReturn(null);
+		when(repository.findByDay(day21)).thenReturn(null);
 
-		List<VoteDTO> dtoList = service.getWinnersOfWeek(day);
+		List<WinnerDTO> dtoList = service.getWinnersOfWeek(day);
 
-		verify(repository, times(7)).getWinnerOfDay(any(Date.class));
+		verify(repository, times(7)).findByDay(any(Date.class));
 		assertThat("DTO list should be empty", dtoList, hasSize(0));
 	}
 
@@ -137,7 +138,7 @@ public class VoteServiceTest_GetWinnersOfWeek {
 		thrown.expect(ReadException.class);
 		thrown.expectMessage(ReadExceptionMessageEnum.UNEXPECTED_EXCEPTION.name());
 
-		when(repository.getWinnerOfDay(any(Date.class))).thenThrow(new RuntimeException());
+		when(repository.findByDay(any(Date.class))).thenThrow(new RuntimeException());
 
 		service.getWinnersOfWeek(day);
 	}
