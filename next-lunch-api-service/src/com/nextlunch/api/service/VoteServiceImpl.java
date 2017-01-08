@@ -106,19 +106,29 @@ public class VoteServiceImpl implements VoteService {
 			c.set(Calendar.MINUTE, 0);
 			c.set(Calendar.SECOND, 0);
 			c.set(Calendar.MILLISECOND, 0);
-			c.add(Calendar.DAY_OF_MONTH, --dayOfWeek);
+			c.add(Calendar.DAY_OF_MONTH, (--dayOfWeek) * -1);
 			dateList.add(c.getTime());
 		}
 
-		for (int i = dateList.size(); i < 7; i++) {
+		if (dateList.size() == 6) {
 			c = Calendar.getInstance();
 			c.setTime(day);
 			c.set(Calendar.HOUR_OF_DAY, 0);
 			c.set(Calendar.MINUTE, 0);
 			c.set(Calendar.SECOND, 0);
 			c.set(Calendar.MILLISECOND, 0);
-			c.add(Calendar.DAY_OF_MONTH, i);
 			dateList.add(c.getTime());
+		} else {
+			for (int i = dateList.size(); i < 7; i++) {
+				c = Calendar.getInstance();
+				c.setTime(day);
+				c.set(Calendar.HOUR_OF_DAY, 0);
+				c.set(Calendar.MINUTE, 0);
+				c.set(Calendar.SECOND, 0);
+				c.set(Calendar.MILLISECOND, 0);
+				c.add(Calendar.DAY_OF_MONTH, i);
+				dateList.add(c.getTime());
+			}
 		}
 
 		return dateList;
@@ -152,23 +162,22 @@ public class VoteServiceImpl implements VoteService {
 
 	@Override
 	@Transactional(readOnly = false)
-	public VoteDTO vote(Long restaurantId, Long userId, Date day) throws CreateException {
+	public VoteDTO vote(VoteDTO voteDTO) throws CreateException {
 		try {
 
 			Calendar c = Calendar.getInstance();
-			c.setTime(day);
 			c.set(Calendar.HOUR_OF_DAY, 0);
 			c.set(Calendar.MINUTE, 0);
 			c.set(Calendar.SECOND, 0);
 			c.set(Calendar.MILLISECOND, 0);
-			day = c.getTime();
+			Date day = c.getTime();
 
-			if (isDateExists(restaurantId, day)) {
+			if (isDateExists(voteDTO.getRestaurantId(), day)) {
 				throw new CreateException(CreateExceptionMessageEnum.VOTE_SAME_WEEK_EXCEPTION);
 			}
 
-			RestaurantDTO restaurantDTO = restaurantService.findOne(restaurantId);
-			UserDTO userDTO = userService.findOne(userId);
+			RestaurantDTO restaurantDTO = restaurantService.findOne(voteDTO.getRestaurantId());
+			UserDTO userDTO = userService.findOne(voteDTO.getUserId());
 
 			Vote vote = new Vote();
 			vote.setRestaurant(getRestaurant(restaurantDTO));

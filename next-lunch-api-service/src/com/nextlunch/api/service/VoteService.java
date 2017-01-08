@@ -14,5 +14,5 @@ public interface VoteService {
 
 	List<WinnerDTO> getWinnersOfWeek(Date day) throws ReadException;
 
-	VoteDTO vote(Long restaurantId, Long userId, Date day) throws CreateException;
+	VoteDTO vote(VoteDTO voteDTO) throws CreateException;
 }

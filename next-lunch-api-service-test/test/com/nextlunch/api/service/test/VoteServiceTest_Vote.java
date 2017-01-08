@@ -8,9 +8,11 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -58,9 +60,6 @@ public class VoteServiceTest_Vote {
 		service = new VoteServiceImpl(repository, restaurantService, userService);
 
 		Calendar cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, 2017);
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		cal.set(Calendar.DAY_OF_MONTH, 15);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
@@ -73,31 +72,29 @@ public class VoteServiceTest_Vote {
 		thrown.expect(CreateException.class);
 		thrown.expectMessage(CreateExceptionMessageEnum.VOTE_SAME_WEEK_EXCEPTION.name());
 
-		Date day16 = getDay(16);
-		Restaurant restaurant = new Restaurant();
-		restaurant.setId(restaurantId);
-		User user = new User();
-		user.setId(userId);
-		Vote vote = new Vote();
-		vote.setRestaurant(restaurant);
-		vote.setUser(user);
-		vote.setDay(day16);
-		when(repository.findByDay(day16)).thenReturn(Arrays.asList(vote));
+		boolean[] first = new boolean[]{true};
 
-		Date day19 = getDay(19);
-		vote = new Vote();
-		vote.setRestaurant(restaurant);
-		vote.setUser(user);
-		vote.setDay(day19);
-		when(repository.findByDay(day19)).thenReturn(Arrays.asList(vote));
+		getDaysOfWeek(day).forEach(c -> {
+			if (first[0]) {
+				Restaurant restaurant = new Restaurant();
+				restaurant.setId(restaurantId);
+				User user = new User();
+				user.setId(userId);
+				Vote vote = new Vote();
+				vote.setRestaurant(restaurant);
+				vote.setUser(user);
+				vote.setDay(c);
+				when(repository.findByDay(c)).thenReturn(Arrays.asList(vote));
+				first[0] = false;
+			}else{
+				when(repository.findByDay(c)).thenReturn(null);
+			}
+		});
 
-		when(repository.findByDay(getDay(15))).thenReturn(null);
-		when(repository.findByDay(getDay(17))).thenReturn(null);
-		when(repository.findByDay(getDay(18))).thenReturn(null);
-		when(repository.findByDay(getDay(20))).thenReturn(null);
-		when(repository.findByDay(getDay(21))).thenReturn(null);
-
-		service.vote(restaurantId, userId, day);
+		VoteDTO voteDTO = new VoteDTO();
+		voteDTO.setRestaurantId(restaurantId);
+		voteDTO.setUserId(userId);
+		service.vote(voteDTO);
 	}
 
 	@Test
@@ -122,15 +119,12 @@ public class VoteServiceTest_Vote {
 		when(restaurantService.findOne(restaurantId)).thenReturn(restaurantDTO);
 		when(userService.findOne(userId)).thenReturn(userDTO);
 
-		when(repository.findByDay(getDay(15))).thenReturn(null);
-		when(repository.findByDay(getDay(16))).thenReturn(null);
-		when(repository.findByDay(getDay(17))).thenReturn(null);
-		when(repository.findByDay(getDay(18))).thenReturn(null);
-		when(repository.findByDay(getDay(19))).thenReturn(null);
-		when(repository.findByDay(getDay(20))).thenReturn(null);
-		when(repository.findByDay(getDay(21))).thenReturn(null);
+		getDaysOfWeek(day).forEach(c -> when(repository.findByDay(c)).thenReturn(null));
 
-		VoteDTO dto = service.vote(restaurantId, userId, day);
+		VoteDTO voteDTO = new VoteDTO();
+		voteDTO.setRestaurantId(restaurantId);
+		voteDTO.setUserId(userId);
+		VoteDTO dto = service.vote(voteDTO);
 
 		verify(repository, times(1)).saveAndFlush(vote);
 
@@ -146,22 +140,50 @@ public class VoteServiceTest_Vote {
 
 		when(repository.findAll()).thenThrow(new RuntimeException());
 
-		service.vote(restaurantId, userId, day);
+		VoteDTO voteDTO = new VoteDTO();
+		voteDTO.setRestaurantId(restaurantId);
+		voteDTO.setUserId(userId);
+		service.vote(voteDTO);
 	}
 
-	private Date getDay(int day) {
-		Calendar cal = Calendar.getInstance();
+	private List<Date> getDaysOfWeek(Date day) {
+		Calendar c = Calendar.getInstance();
+		c.setTime(day);
+		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
 
-		cal = Calendar.getInstance();
-		cal.set(Calendar.YEAR, 2017);
-		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		cal.set(Calendar.DAY_OF_MONTH, day);
-		cal.set(Calendar.HOUR_OF_DAY, 0);
-		cal.set(Calendar.MINUTE, 0);
-		cal.set(Calendar.SECOND, 0);
-		cal.set(Calendar.MILLISECOND, 0);
-		return cal.getTime();
+		List<Date> dateList = new ArrayList<>();
+		while (dayOfWeek > 1) {
+			c = Calendar.getInstance();
+			c.setTime(day);
+			c.set(Calendar.HOUR_OF_DAY, 0);
+			c.set(Calendar.MINUTE, 0);
+			c.set(Calendar.SECOND, 0);
+			c.set(Calendar.MILLISECOND, 0);
+			c.add(Calendar.DAY_OF_MONTH, (--dayOfWeek) * -1);
+			dateList.add(c.getTime());
+		}
 
+		if (dateList.size() == 6) {
+			c = Calendar.getInstance();
+			c.setTime(day);
+			c.set(Calendar.HOUR_OF_DAY, 0);
+			c.set(Calendar.MINUTE, 0);
+			c.set(Calendar.SECOND, 0);
+			c.set(Calendar.MILLISECOND, 0);
+			dateList.add(c.getTime());
+		} else {
+			for (int i = dateList.size(); i < 7; i++) {
+				c = Calendar.getInstance();
+				c.setTime(day);
+				c.set(Calendar.HOUR_OF_DAY, 0);
+				c.set(Calendar.MINUTE, 0);
+				c.set(Calendar.SECOND, 0);
+				c.set(Calendar.MILLISECOND, 0);
+				c.add(Calendar.DAY_OF_MONTH, i);
+				dateList.add(c.getTime());
+			}
+		}
+
+		return dateList;
 	}
-
 }

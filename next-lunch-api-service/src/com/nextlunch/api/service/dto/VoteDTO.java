@@ -5,7 +5,6 @@ import java.util.Date;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nextlunch.api.entity.Vote;
 
@@ -20,8 +19,7 @@ public class VoteDTO implements GenenricDTO {
 	private Long restaurantId;
 	@NotNull
 	private Long userId;
-	@NotNull
-	@JsonFormat(pattern = "yyyy-MM-dd")
+	@Null
 	private Date day;
 
 	public VoteDTO() {
