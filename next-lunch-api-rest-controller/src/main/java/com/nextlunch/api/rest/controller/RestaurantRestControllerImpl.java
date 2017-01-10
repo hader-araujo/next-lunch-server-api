@@ -18,7 +18,7 @@ import com.nextlunch.api.service.exception.ReadException;
 import com.nextlunch.api.service.exception.enums.ReadExceptionMessageEnum;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:80")
+@CrossOrigin(origins = "http://localhost")
 @RequestMapping(value = "/restaurant")
 public class RestaurantRestControllerImpl implements RestaurantRestController {
 
