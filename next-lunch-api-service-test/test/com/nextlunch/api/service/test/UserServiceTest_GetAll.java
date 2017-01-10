@@ -61,7 +61,7 @@ public class UserServiceTest_GetAll {
 
 		List<User> userList = getListOfUser();
 
-		when(repository.findAll()).thenReturn(userList);
+		when(repository.findAllByOrderByNameAsc()).thenReturn(userList);
 
 		List<UserDTO> userDtoListExpected = getListOfUserDTO();
 		List<UserDTO> userDtoListOut = service.getAll();
@@ -80,7 +80,7 @@ public class UserServiceTest_GetAll {
 
 	@Test
 	public void GetAll_NoneDtoShouldReturnEmptyList() throws ReadException {
-		when(repository.findAll()).thenReturn(Collections.emptyList());
+		when(repository.findAllByOrderByNameAsc()).thenReturn(Collections.emptyList());
 
 		List<UserDTO> userList = service.getAll();
 
@@ -92,7 +92,7 @@ public class UserServiceTest_GetAll {
 		thrown.expect(ReadException.class);
 		thrown.expectMessage(ReadExceptionMessageEnum.UNEXPECTED_EXCEPTION.name());
 
-		when(repository.findAll()).thenThrow(new RuntimeException());
+		when(repository.findAllByOrderByNameAsc()).thenThrow(new RuntimeException());
 
 		service.getAll();
 	}

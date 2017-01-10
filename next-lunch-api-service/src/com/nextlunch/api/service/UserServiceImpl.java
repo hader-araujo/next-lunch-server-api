@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public List<UserDTO> getAll() throws ReadException {
 		try {
-			List<User> userList = repository.findAll();
+			List<User> userList = repository.findAllByOrderByNameAsc();
 			return userList.stream().map(f -> new UserDTO(f))
 					.collect(Collectors.toList());
 		} catch (Exception e) {

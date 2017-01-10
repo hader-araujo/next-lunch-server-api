@@ -34,7 +34,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 	@Override
 	public List<RestaurantDTO> getAll() throws ReadException {
 		try {
-			List<Restaurant> restaurantList = repository.findAll();
+			List<Restaurant> restaurantList = repository.findAllByOrderByNameAsc();
 			return restaurantList.stream().map(f -> new RestaurantDTO(f))
 					.collect(Collectors.toList());
 		} catch (Exception e) {

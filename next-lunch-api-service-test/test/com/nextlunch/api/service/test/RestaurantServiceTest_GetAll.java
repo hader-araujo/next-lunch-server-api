@@ -61,7 +61,7 @@ public class RestaurantServiceTest_GetAll {
 
 		List<Restaurant> restaurantList = getListOfRestaurant();
 
-		when(repository.findAll()).thenReturn(restaurantList);
+		when(repository.findAllByOrderByNameAsc()).thenReturn(restaurantList);
 
 		List<RestaurantDTO> restaurantDtoListExpected = getListOfRestaurantDTO();
 		List<RestaurantDTO> restaurantDtoListOut = service.getAll();
@@ -78,7 +78,7 @@ public class RestaurantServiceTest_GetAll {
 
 	@Test
 	public void GetAll_NoneDtoShouldReturnEmptyList() throws ReadException {
-		when(repository.findAll()).thenReturn(Collections.emptyList());
+		when(repository.findAllByOrderByNameAsc()).thenReturn(Collections.emptyList());
 
 		List<RestaurantDTO> restaurantList = service.getAll();
 
@@ -90,7 +90,7 @@ public class RestaurantServiceTest_GetAll {
 		thrown.expect(ReadException.class);
 		thrown.expectMessage(ReadExceptionMessageEnum.UNEXPECTED_EXCEPTION.name());
 
-		when(repository.findAll()).thenThrow(new RuntimeException());
+		when(repository.findAllByOrderByNameAsc()).thenThrow(new RuntimeException());
 
 		service.getAll();
 	}
