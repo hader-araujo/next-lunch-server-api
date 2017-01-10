@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ import com.nextlunch.api.service.exception.ReadException;
 import com.nextlunch.api.service.exception.enums.ReadExceptionMessageEnum;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:80")
 @RequestMapping(value = "/vote")
 public class VoteRestControllerImpl implements VoteRestController {
 
