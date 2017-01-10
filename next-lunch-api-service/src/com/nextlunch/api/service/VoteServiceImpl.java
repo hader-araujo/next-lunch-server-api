@@ -77,12 +77,12 @@ public class VoteServiceImpl implements VoteService {
 					.entrySet().stream().sorted(Map.Entry.<Restaurant, Long> comparingByValue().reversed())
 					.forEachOrdered(e -> sortedMap.put(e.getKey(), e.getValue()));
 
-			WinnerDTO winnerList = sortedMap.entrySet().stream()
+			List<WinnerDTO> winnerList = sortedMap.entrySet().stream()
 					.filter(p -> p.getValue() == sortedMap.values().iterator().next())
 					.map(f -> new WinnerDTO(f.getKey().getId(), f.getKey().getName(), f.getValue()))
-					.sorted(Comparator.comparing(WinnerDTO::getRestaurantName)).collect(Collectors.toList()).get(0);
+					.sorted(Comparator.comparing(WinnerDTO::getRestaurantName)).collect(Collectors.toList());
 
-			return winnerList;
+			return winnerList.isEmpty()? null : winnerList.get(0);
 		} catch (Exception e) {
 			if (e instanceof ReadException
 					&& e.getMessage().equals(ReadExceptionMessageEnum.DATE_NULL_EXCEPTION.name())) {
