@@ -18,23 +18,23 @@ import org.junit.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import com.nextlunch.api.rest.controller.VoteRestController;
-import com.nextlunch.api.rest.controller.VoteRestControllerImpl;
+import com.nextlunch.api.rest.controller.WinnerRestController;
+import com.nextlunch.api.rest.controller.WinnerRestControllerImpl;
 import com.nextlunch.api.service.VoteService;
 import com.nextlunch.api.service.dto.WinnerDTO;
 import com.nextlunch.api.service.exception.ReadException;
 import com.nextlunch.api.service.exception.enums.ReadExceptionMessageEnum;
 
-public class VoteRestControllerTest_GetWinner {
+public class WinnerRestControllerTest_GetWinnerOfDay {
 	private VoteService service;
-	private VoteRestController controller;
+	private WinnerRestController controller;
 	private Date day = Calendar.getInstance().getTime();
 	private Long restaurantId = 1L;
 
 	@Before
 	public void setup() {
 		service = mock(VoteService.class);
-		controller = new VoteRestControllerImpl(service);
+		controller = new WinnerRestControllerImpl(service);
 	}
 
 	@Test
@@ -46,7 +46,7 @@ public class VoteRestControllerTest_GetWinner {
 		when(service.getWinnerOfDay(day)).thenReturn(dtoToReturn);
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinner(day);
+		ResponseEntity responseEntity = controller.getWinnerOfDay(day);
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		WinnerDTO body = (WinnerDTO) responseEntity.getBody();
@@ -63,7 +63,7 @@ public class VoteRestControllerTest_GetWinner {
 		when(service.getWinnerOfDay(day)).thenThrow(new ReadException(ReadExceptionMessageEnum.NOT_FOUND));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinner(day);
+		ResponseEntity responseEntity = controller.getWinnerOfDay(day);
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 
@@ -77,7 +77,7 @@ public class VoteRestControllerTest_GetWinner {
 		when(service.getWinnerOfDay(null)).thenThrow(new ReadException(ReadExceptionMessageEnum.ID_NULL_EXCEPTION));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinner(null);
+		ResponseEntity responseEntity = controller.getWinnerOfDay(null);
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status for null ID", httpStatus, equalTo(HttpStatus.BAD_REQUEST));
@@ -90,7 +90,7 @@ public class VoteRestControllerTest_GetWinner {
 				.thenThrow(new ReadException(ReadExceptionMessageEnum.UNEXPECTED_EXCEPTION));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinner(null);
+		ResponseEntity responseEntity = controller.getWinnerOfDay(null);
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -102,7 +102,7 @@ public class VoteRestControllerTest_GetWinner {
 		doThrow(new RuntimeException()).when(service).getWinnerOfDay(any(Date.class));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinner(null);
+		ResponseEntity responseEntity = controller.getWinnerOfDay(null);
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.INTERNAL_SERVER_ERROR));

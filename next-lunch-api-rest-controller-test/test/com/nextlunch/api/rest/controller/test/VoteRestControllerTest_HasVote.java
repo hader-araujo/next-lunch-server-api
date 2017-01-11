@@ -34,7 +34,7 @@ public class VoteRestControllerTest_HasVote {
 	public void setup() {
 		service = mock(VoteService.class);
 		controller = new VoteRestControllerImpl(service);
-		
+
 		Calendar c = Calendar.getInstance();
 		c.set(Calendar.HOUR_OF_DAY, 11);
 		c.set(Calendar.MINUTE, 0);
@@ -49,7 +49,7 @@ public class VoteRestControllerTest_HasVote {
 		GetVoteDTO dto = new GetVoteDTO();
 		dto.setUserId(userId);
 		dto.setDay(day);
-		
+
 		@SuppressWarnings("rawtypes")
 		ResponseEntity responseEntity = controller.hasVote(userId, day);
 
@@ -62,7 +62,7 @@ public class VoteRestControllerTest_HasVote {
 	@Test
 	public void vote_GivenExceptionOnServiceShoudReturnInternalServerErrorStatus() throws ReadException {
 		doThrow(new ReadException(ReadExceptionMessageEnum.UNEXPECTED_EXCEPTION)).when(service)
-		.hasVote(any(GetVoteDTO.class));
+				.hasVote(any(GetVoteDTO.class));
 		doThrow(new RuntimeException()).when(service).hasVote(any(GetVoteDTO.class));
 
 		@SuppressWarnings("rawtypes")

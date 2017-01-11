@@ -13,8 +13,5 @@ public interface VoteRestController {
 	ResponseEntity vote(VoteDTO voteDTO, BindingResult result);
 
 	@SuppressWarnings("rawtypes")
-	ResponseEntity getWinner(Date day);
-	
-	@SuppressWarnings("rawtypes")
 	ResponseEntity hasVote(Long userId, Date day); 
 }

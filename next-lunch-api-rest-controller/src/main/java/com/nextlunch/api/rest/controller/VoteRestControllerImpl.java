@@ -20,10 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nextlunch.api.service.VoteService;
 import com.nextlunch.api.service.dto.GetVoteDTO;
 import com.nextlunch.api.service.dto.VoteDTO;
-import com.nextlunch.api.service.dto.WinnerDTO;
 import com.nextlunch.api.service.exception.CreateException;
 import com.nextlunch.api.service.exception.ReadException;
-import com.nextlunch.api.service.exception.enums.ReadExceptionMessageEnum;
 
 @RestController
 @CrossOrigin(origins = "http://localhost")
@@ -66,12 +64,13 @@ public class VoteRestControllerImpl implements VoteRestController {
 	@Override
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/{userId}/{day}", method = RequestMethod.GET)
-	public ResponseEntity hasVote(@PathVariable("userId") Long userId, @PathVariable("day") @DateTimeFormat(pattern = "yyyy-MM-dd") Date day) {
+	public ResponseEntity hasVote(@PathVariable("userId") Long userId,
+			@PathVariable("day") @DateTimeFormat(pattern = "yyyy-MM-dd") Date day) {
 		try {
 			GetVoteDTO getVoteDTO = new GetVoteDTO();
 			getVoteDTO.setUserId(userId);
 			getVoteDTO.setDay(day);
-			
+
 			boolean hasVote = service.hasVote(getVoteDTO);
 
 			return new ResponseEntity<>(hasVote, HttpStatus.CREATED);
@@ -80,34 +79,6 @@ public class VoteRestControllerImpl implements VoteRestController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			log.error("hasVote::Unexpected error on rest controller", e);
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
-	@Override
-	@SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/{day}", method = RequestMethod.GET)
-	public ResponseEntity getWinner(@PathVariable("day") @DateTimeFormat(pattern = "yyyy-MM-dd") Date day) {
-		try {
-			
-			WinnerDTO dto = service.getWinnerOfDay(day);
-
-			return new ResponseEntity<WinnerDTO>(dto, HttpStatus.OK);
-
-		} catch (ReadException e) {
-			switch (ReadExceptionMessageEnum.valueOf(e.getMessage())) {
-			case NOT_FOUND:
-				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-			case ID_NULL_EXCEPTION:
-				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-			case UNEXPECTED_EXCEPTION:
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-			default:
-				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-			}
-
-		} catch (Exception e) {
-			log.error("getWinner::Unexpected error on rest controller", e);
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}

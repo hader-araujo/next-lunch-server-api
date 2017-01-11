@@ -50,7 +50,7 @@ public class VoteRestControllerTest_Vote {
 
 		VoteDTO dto = new VoteDTO();
 		dto.setRestaurantId(restaurantId);
-		;
+
 		dto.setUserId(userId);
 
 		when(result.hasErrors()).thenReturn(false);
