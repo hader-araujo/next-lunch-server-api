@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nextlunch.api.service.VoteService;
+import com.nextlunch.api.service.dto.GetVoteDTO;
 import com.nextlunch.api.service.dto.VoteDTO;
 import com.nextlunch.api.service.dto.WinnerDTO;
 import com.nextlunch.api.service.exception.CreateException;
@@ -64,9 +65,31 @@ public class VoteRestControllerImpl implements VoteRestController {
 
 	@Override
 	@SuppressWarnings("rawtypes")
+	@RequestMapping(value = "/{userId}/{day}", method = RequestMethod.GET)
+	public ResponseEntity hasVote(@PathVariable("userId") Long userId, @PathVariable("day") @DateTimeFormat(pattern = "yyyy-MM-dd") Date day) {
+		try {
+			GetVoteDTO getVoteDTO = new GetVoteDTO();
+			getVoteDTO.setUserId(userId);
+			getVoteDTO.setDay(day);
+			
+			boolean hasVote = service.hasVote(getVoteDTO);
+
+			return new ResponseEntity<>(hasVote, HttpStatus.CREATED);
+
+		} catch (ReadException e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception e) {
+			log.error("hasVote::Unexpected error on rest controller", e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@Override
+	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/{day}", method = RequestMethod.GET)
 	public ResponseEntity getWinner(@PathVariable("day") @DateTimeFormat(pattern = "yyyy-MM-dd") Date day) {
 		try {
+			
 			WinnerDTO dto = service.getWinnerOfDay(day);
 
 			return new ResponseEntity<WinnerDTO>(dto, HttpStatus.OK);

@@ -3,6 +3,7 @@ package com.nextlunch.api.service;
 import java.util.Date;
 import java.util.List;
 
+import com.nextlunch.api.service.dto.GetVoteDTO;
 import com.nextlunch.api.service.dto.VoteDTO;
 import com.nextlunch.api.service.dto.WinnerDTO;
 import com.nextlunch.api.service.exception.CreateException;
@@ -15,4 +16,6 @@ public interface VoteService {
 	List<WinnerDTO> getWinnersOfWeek(Date day) throws ReadException;
 
 	VoteDTO vote(VoteDTO voteDTO) throws CreateException;
+	
+	boolean hasVote(GetVoteDTO getVoteDTO) throws ReadException;
 }

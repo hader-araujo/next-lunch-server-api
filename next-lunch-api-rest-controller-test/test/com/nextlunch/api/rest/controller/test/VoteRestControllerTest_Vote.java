@@ -33,7 +33,6 @@ public class VoteRestControllerTest_Vote {
 	private VoteRestController controller;
 	private BindingResult result;
 
-	private String fieldName_Description = "description";
 	private String fieldName_Name = "name";
 
 	private Long restaurantId = 1L;
@@ -67,12 +66,9 @@ public class VoteRestControllerTest_Vote {
 
 	@Test
 	public void vote_GivenSomeErrorsShouldReturnTheCodeForEachField() throws CreateException {
-		String errorCodeDescriptionNotNull = "NotNull.voteDTO.description";
 		String errorCodeNameSize = "Size.voteDTO.name";
 
 		List<ObjectError> listObjectError = new ArrayList<>();
-		listObjectError
-				.add(new ObjectError(fieldName_Description, new String[] { errorCodeDescriptionNotNull }, null, null));
 		listObjectError.add(new ObjectError(fieldName_Name, new String[] { errorCodeNameSize }, null, null));
 
 		when(result.hasErrors()).thenReturn(true);
@@ -85,7 +81,6 @@ public class VoteRestControllerTest_Vote {
 		Object[] body = (Object[]) responseEntity.getBody();
 
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.BAD_REQUEST));
-		assertThat("Missing error code", Arrays.asList(body), hasItem(equalTo(errorCodeDescriptionNotNull)));
 		assertThat("Missing error code", Arrays.asList(body), hasItem(equalTo(errorCodeNameSize)));
 
 		verify(service, times(0)).vote(any(VoteDTO.class));

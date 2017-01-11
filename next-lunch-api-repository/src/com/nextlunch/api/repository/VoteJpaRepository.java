@@ -12,4 +12,6 @@ import com.nextlunch.api.entity.Vote;
 public interface VoteJpaRepository extends JpaRepository<Vote, Long> {
 	
 	List<Vote> findByDay(Date day);
+	
+	Vote findByDayAndUser_Id(Date day, Long userId);
 }

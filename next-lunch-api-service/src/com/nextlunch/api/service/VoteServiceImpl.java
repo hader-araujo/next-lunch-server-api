@@ -19,6 +19,7 @@ import com.nextlunch.api.entity.Restaurant;
 import com.nextlunch.api.entity.User;
 import com.nextlunch.api.entity.Vote;
 import com.nextlunch.api.repository.VoteJpaRepository;
+import com.nextlunch.api.service.dto.GetVoteDTO;
 import com.nextlunch.api.service.dto.RestaurantDTO;
 import com.nextlunch.api.service.dto.UserDTO;
 import com.nextlunch.api.service.dto.VoteDTO;
@@ -33,7 +34,7 @@ import com.nextlunch.api.service.exception.enums.ReadExceptionMessageEnum;
 public class VoteServiceImpl implements VoteService {
 
 	private static final Logger log = LogManager.getLogger(VoteServiceImpl.class.getName());
-	
+
 	private final Calendar middleDay;
 
 	private VoteJpaRepository repository;
@@ -56,7 +57,7 @@ public class VoteServiceImpl implements VoteService {
 		this.repository = repository;
 		this.restaurantService = restaurantService;
 		this.userService = userService;
-		
+
 		middleDay = Calendar.getInstance();
 		middleDay.set(Calendar.HOUR_OF_DAY, 12);
 		middleDay.set(Calendar.MINUTE, 0);
@@ -64,9 +65,10 @@ public class VoteServiceImpl implements VoteService {
 		middleDay.set(Calendar.MILLISECOND, 0);
 	}
 
-	private boolean isBeforeMiddleDay(){
+	private boolean isBeforeMiddleDay() {
 		return Calendar.getInstance().before(middleDay);
 	}
+
 	@Override
 	public WinnerDTO getWinnerOfDay(Date day) throws ReadException {
 		try {
@@ -90,10 +92,11 @@ public class VoteServiceImpl implements VoteService {
 
 			List<WinnerDTO> winnerList = sortedMap.entrySet().stream()
 					.filter(p -> p.getValue() == sortedMap.values().iterator().next())
-					.map(f -> new WinnerDTO(f.getKey().getId(), f.getKey().getName(), f.getValue(), isBeforeMiddleDay()))
+					.map(f -> new WinnerDTO(f.getKey().getId(), f.getKey().getName(), f.getValue(),
+							isBeforeMiddleDay()))
 					.sorted(Comparator.comparing(WinnerDTO::getRestaurantName)).collect(Collectors.toList());
 
-			return winnerList.isEmpty()? null : winnerList.get(0);
+			return winnerList.isEmpty() ? null : winnerList.get(0);
 		} catch (Exception e) {
 			if (e instanceof ReadException
 					&& e.getMessage().equals(ReadExceptionMessageEnum.DATE_NULL_EXCEPTION.name())) {
@@ -205,6 +208,17 @@ public class VoteServiceImpl implements VoteService {
 		}
 	}
 
+	@Override
+	public boolean hasVote(GetVoteDTO getVoteDTO) throws ReadException {
+		try {
+			Vote voteAdded = repository.findByDayAndUser_Id(getVoteDTO.getDay(), getVoteDTO.getUserId());
+			return voteAdded != null;
+		} catch (Exception e) {
+			log.error(ReadExceptionMessageEnum.UNEXPECTED_EXCEPTION, e);
+			throw new ReadException(ReadExceptionMessageEnum.UNEXPECTED_EXCEPTION, e);
+		}
+	}
+
 	private boolean isDateExists(Long restaurantId, Date day) throws ReadException {
 		List<WinnerDTO> winners = getWinnersOfWeek(day);
 
@@ -224,4 +238,5 @@ public class VoteServiceImpl implements VoteService {
 		user.setName(userDTO.getName());
 		return user;
 	}
+
 }
