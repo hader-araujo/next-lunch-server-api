@@ -1,7 +1,5 @@
 package com.nextlunch.api.rest.controller;
 
-import java.util.Date;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 
@@ -13,5 +11,5 @@ public interface VoteRestController {
 	ResponseEntity vote(VoteDTO voteDTO, BindingResult result);
 
 	@SuppressWarnings("rawtypes")
-	ResponseEntity hasVote(Long userId, Date day); 
+	ResponseEntity hasVote(Long userId); 
 }

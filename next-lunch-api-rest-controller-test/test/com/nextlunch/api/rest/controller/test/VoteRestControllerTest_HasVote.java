@@ -45,18 +45,13 @@ public class VoteRestControllerTest_HasVote {
 
 	@Test
 	public void vote_GivenDTOShoudReturnOKStatus() throws ReadException {
-
-		GetVoteDTO dto = new GetVoteDTO();
-		dto.setUserId(userId);
-		dto.setDay(day);
-
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.hasVote(userId, day);
+		ResponseEntity responseEntity = controller.hasVote(userId);
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.CREATED));
 
-		verify(service, times(1)).hasVote(dto);
+		verify(service, times(1)).hasVote(any(GetVoteDTO.class));
 	}
 
 	@Test
@@ -66,7 +61,7 @@ public class VoteRestControllerTest_HasVote {
 		doThrow(new RuntimeException()).when(service).hasVote(any(GetVoteDTO.class));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.hasVote(null, null);
+		ResponseEntity responseEntity = controller.hasVote(null);
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.INTERNAL_SERVER_ERROR));

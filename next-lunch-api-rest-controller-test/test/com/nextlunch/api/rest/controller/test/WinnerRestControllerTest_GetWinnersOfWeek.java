@@ -64,20 +64,6 @@ public class WinnerRestControllerTest_GetWinnersOfWeek {
 	}
 
 	@Test
-	public void get_GivenUnknownIdShouldReturnNotFoundStatus() throws ReadException {
-		when(service.getWinnersOfWeek(day)).thenThrow(new ReadException(ReadExceptionMessageEnum.NOT_FOUND));
-
-		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnersOfWeek();
-
-		HttpStatus httpStatus = responseEntity.getStatusCode();
-
-		assertThat("Wrong HTTP status for unknown ID", httpStatus, equalTo(HttpStatus.NOT_FOUND));
-
-		verify(service, times(1)).getWinnersOfWeek(day);
-	}
-
-	@Test
 	public void get_GivenNullIdShouldReturnBadRequestStatus() throws ReadException {
 		when(service.getWinnersOfWeek(any(Date.class))).thenThrow(new ReadException(ReadExceptionMessageEnum.ID_NULL_EXCEPTION));
 

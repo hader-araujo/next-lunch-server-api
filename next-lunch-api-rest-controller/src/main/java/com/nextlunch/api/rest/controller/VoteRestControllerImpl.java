@@ -1,11 +1,11 @@
 package com.nextlunch.api.rest.controller;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -63,10 +63,11 @@ public class VoteRestControllerImpl implements VoteRestController {
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/{userId}/{day}", method = RequestMethod.GET)
-	public ResponseEntity hasVote(@PathVariable("userId") Long userId,
-			@PathVariable("day") @DateTimeFormat(pattern = "yyyy-MM-dd") Date day) {
+	@RequestMapping(value = "/{userId}", method = RequestMethod.GET)
+	public ResponseEntity hasVote(@PathVariable("userId") Long userId) {
 		try {
+			Date day = Calendar.getInstance().getTime();
+
 			GetVoteDTO getVoteDTO = new GetVoteDTO();
 			getVoteDTO.setUserId(userId);
 			getVoteDTO.setDay(day);
