@@ -69,7 +69,7 @@ public class WinnerRestControllerTest_GetWinnerOfDay {
 
 		assertThat("Wrong HTTP status for unknown ID", httpStatus, equalTo(HttpStatus.NOT_FOUND));
 
-		verify(service, times(1)).getWinnerOfDay(day);
+		verify(service, times(1)).getWinnerOfDay(any(Date.class));
 	}
 
 	@Test

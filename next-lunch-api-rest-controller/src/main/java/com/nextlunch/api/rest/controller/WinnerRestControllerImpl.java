@@ -7,11 +7,9 @@ import java.util.List;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,14 +36,18 @@ public class WinnerRestControllerImpl implements WinnerRestController {
 		this.service = service;
 	}
 
-
 	@Override
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/day", method = RequestMethod.GET)
 	public ResponseEntity getWinnerOfDay() {
 		try {
-			Date day = Calendar.getInstance().getTime();
-			
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.HOUR_OF_DAY, 0);
+			c.set(Calendar.MINUTE, 0);
+			c.set(Calendar.SECOND, 0);
+			c.set(Calendar.MILLISECOND, 0);
+			Date day = c.getTime();
+
 			WinnerDTO dto = service.getWinnerOfDay(day);
 
 			return new ResponseEntity<WinnerDTO>(dto, HttpStatus.OK);
@@ -68,13 +70,19 @@ public class WinnerRestControllerImpl implements WinnerRestController {
 		}
 	}
 
-
 	@Override
 	@SuppressWarnings("rawtypes")
 	@RequestMapping(value = "/week", method = RequestMethod.GET)
 	public ResponseEntity getWinnersOfWeek() {
 		try {
-			Date day = Calendar.getInstance().getTime();
+			Calendar c = Calendar.getInstance();
+			c.set(Calendar.HOUR_OF_DAY, 0);
+			c.set(Calendar.MINUTE, 0);
+			c.set(Calendar.SECOND, 0);
+			c.set(Calendar.MILLISECOND, 0);
+			Date day = c.getTime();
+
+			log.info("11111111111111111111111111111111111111=" + day);
 			
 			List<WinnerDTO> dto = service.getWinnersOfWeek(day);
 

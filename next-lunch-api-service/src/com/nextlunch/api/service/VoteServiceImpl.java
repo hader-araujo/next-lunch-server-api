@@ -110,39 +110,17 @@ public class VoteServiceImpl implements VoteService {
 	private List<Date> getDaysOfWeek(Date day) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(day);
-		int dayOfWeek = c.get(Calendar.DAY_OF_WEEK);
-
+		int delta = - c.get(Calendar.DAY_OF_WEEK);
+		c.add(Calendar.DAY_OF_MONTH, delta );
+		 
 		List<Date> dateList = new ArrayList<>();
-		while (dayOfWeek > 1) {
-			c = Calendar.getInstance();
-			c.setTime(day);
+		while (dateList.size() < 7) {
 			c.set(Calendar.HOUR_OF_DAY, 0);
 			c.set(Calendar.MINUTE, 0);
 			c.set(Calendar.SECOND, 0);
 			c.set(Calendar.MILLISECOND, 0);
-			c.add(Calendar.DAY_OF_MONTH, (--dayOfWeek) * -1);
+			c.add(Calendar.DAY_OF_MONTH, 1);
 			dateList.add(c.getTime());
-		}
-
-		if (dateList.size() == 6) {
-			c = Calendar.getInstance();
-			c.setTime(day);
-			c.set(Calendar.HOUR_OF_DAY, 0);
-			c.set(Calendar.MINUTE, 0);
-			c.set(Calendar.SECOND, 0);
-			c.set(Calendar.MILLISECOND, 0);
-			dateList.add(c.getTime());
-		} else {
-			for (int i = dateList.size(); i < 7; i++) {
-				c = Calendar.getInstance();
-				c.setTime(day);
-				c.set(Calendar.HOUR_OF_DAY, 0);
-				c.set(Calendar.MINUTE, 0);
-				c.set(Calendar.SECOND, 0);
-				c.set(Calendar.MILLISECOND, 0);
-				c.add(Calendar.DAY_OF_MONTH, i);
-				dateList.add(c.getTime());
-			}
 		}
 
 		return dateList;
