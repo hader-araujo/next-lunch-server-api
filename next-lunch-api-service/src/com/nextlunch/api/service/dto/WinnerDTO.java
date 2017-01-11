@@ -10,14 +10,16 @@ public class WinnerDTO implements GenenricDTO {
 	private Long restaurantId;
 	private String restaurantName;
 	private Long quantity;
+	private boolean beforeMiddleDay;
 
 	public WinnerDTO() {
 	}
 
-	public WinnerDTO(Long restaurantId, String restaurantName, Long quantity) {
+	public WinnerDTO(Long restaurantId, String restaurantName, Long quantity, boolean beforeMiddleDay) {
 		this.restaurantId = restaurantId;
 		this.restaurantName = restaurantName;
 		this.quantity = quantity;
+		this.beforeMiddleDay = beforeMiddleDay;
 	}
 
 	public Long getRestaurantId() {
@@ -44,10 +46,19 @@ public class WinnerDTO implements GenenricDTO {
 		this.quantity = quantity;
 	}
 
+	public boolean isBeforeMiddleDay() {
+		return beforeMiddleDay;
+	}
+
+	public void setBeforeMiddleDay(boolean beforeMiddleDay) {
+		this.beforeMiddleDay = beforeMiddleDay;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + (beforeMiddleDay ? 1231 : 1237);
 		result = prime * result + ((quantity == null) ? 0 : quantity.hashCode());
 		result = prime * result + ((restaurantId == null) ? 0 : restaurantId.hashCode());
 		result = prime * result + ((restaurantName == null) ? 0 : restaurantName.hashCode());
@@ -63,6 +74,8 @@ public class WinnerDTO implements GenenricDTO {
 		if (getClass() != obj.getClass())
 			return false;
 		WinnerDTO other = (WinnerDTO) obj;
+		if (beforeMiddleDay != other.beforeMiddleDay)
+			return false;
 		if (quantity == null) {
 			if (other.quantity != null)
 				return false;
@@ -84,7 +97,7 @@ public class WinnerDTO implements GenenricDTO {
 	@Override
 	public String toString() {
 		return "WinnerDTO [restaurantId=" + restaurantId + ", restaurantName=" + restaurantName + ", quantity="
-				+ quantity + "]";
+				+ quantity + ", beforeMiddleDay=" + beforeMiddleDay + "]";
 	}
 
 }

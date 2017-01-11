@@ -33,6 +33,8 @@ import com.nextlunch.api.service.exception.enums.ReadExceptionMessageEnum;
 public class VoteServiceImpl implements VoteService {
 
 	private static final Logger log = LogManager.getLogger(VoteServiceImpl.class.getName());
+	
+	private final Calendar middleDay;
 
 	private VoteJpaRepository repository;
 	private RestaurantService restaurantService;
@@ -54,8 +56,17 @@ public class VoteServiceImpl implements VoteService {
 		this.repository = repository;
 		this.restaurantService = restaurantService;
 		this.userService = userService;
+		
+		middleDay = Calendar.getInstance();
+		middleDay.set(Calendar.HOUR_OF_DAY, 12);
+		middleDay.set(Calendar.MINUTE, 0);
+		middleDay.set(Calendar.SECOND, 0);
+		middleDay.set(Calendar.MILLISECOND, 0);
 	}
 
+	private boolean isBeforeMiddleDay(){
+		return Calendar.getInstance().before(middleDay);
+	}
 	@Override
 	public WinnerDTO getWinnerOfDay(Date day) throws ReadException {
 		try {
@@ -79,7 +90,7 @@ public class VoteServiceImpl implements VoteService {
 
 			List<WinnerDTO> winnerList = sortedMap.entrySet().stream()
 					.filter(p -> p.getValue() == sortedMap.values().iterator().next())
-					.map(f -> new WinnerDTO(f.getKey().getId(), f.getKey().getName(), f.getValue()))
+					.map(f -> new WinnerDTO(f.getKey().getId(), f.getKey().getName(), f.getValue(), isBeforeMiddleDay()))
 					.sorted(Comparator.comparing(WinnerDTO::getRestaurantName)).collect(Collectors.toList());
 
 			return winnerList.isEmpty()? null : winnerList.get(0);
