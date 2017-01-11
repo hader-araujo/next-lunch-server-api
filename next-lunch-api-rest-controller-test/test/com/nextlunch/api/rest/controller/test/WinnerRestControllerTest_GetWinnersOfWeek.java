@@ -46,10 +46,10 @@ public class WinnerRestControllerTest_GetWinnersOfWeek {
 		dtoToReturn.setQuantity(1L);
 		dtoToReturn.setRestaurantId(restaurantId);
 
-		when(service.getWinnersOfWeek(day)).thenReturn(Arrays.asList(dtoToReturn));
+		when(service.getWinnersOfWeek(any(Date.class))).thenReturn(Arrays.asList(dtoToReturn));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnersOfWeek(day);
+		ResponseEntity responseEntity = controller.getWinnersOfWeek();
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		@SuppressWarnings("unchecked")
@@ -68,7 +68,7 @@ public class WinnerRestControllerTest_GetWinnersOfWeek {
 		when(service.getWinnersOfWeek(day)).thenThrow(new ReadException(ReadExceptionMessageEnum.NOT_FOUND));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnersOfWeek(day);
+		ResponseEntity responseEntity = controller.getWinnersOfWeek();
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 
@@ -79,10 +79,10 @@ public class WinnerRestControllerTest_GetWinnersOfWeek {
 
 	@Test
 	public void get_GivenNullIdShouldReturnBadRequestStatus() throws ReadException {
-		when(service.getWinnersOfWeek(null)).thenThrow(new ReadException(ReadExceptionMessageEnum.ID_NULL_EXCEPTION));
+		when(service.getWinnersOfWeek(any(Date.class))).thenThrow(new ReadException(ReadExceptionMessageEnum.ID_NULL_EXCEPTION));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnersOfWeek(null);
+		ResponseEntity responseEntity = controller.getWinnersOfWeek();
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status for null ID", httpStatus, equalTo(HttpStatus.BAD_REQUEST));
@@ -95,7 +95,7 @@ public class WinnerRestControllerTest_GetWinnersOfWeek {
 				.thenThrow(new ReadException(ReadExceptionMessageEnum.UNEXPECTED_EXCEPTION));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnersOfWeek(null);
+		ResponseEntity responseEntity = controller.getWinnersOfWeek();
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -107,7 +107,7 @@ public class WinnerRestControllerTest_GetWinnersOfWeek {
 		doThrow(new RuntimeException()).when(service).getWinnersOfWeek(any(Date.class));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnersOfWeek(null);
+		ResponseEntity responseEntity = controller.getWinnersOfWeek();
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.INTERNAL_SERVER_ERROR));

@@ -43,10 +43,10 @@ public class WinnerRestControllerTest_GetWinnerOfDay {
 		dtoToReturn.setQuantity(1L);
 		dtoToReturn.setRestaurantId(restaurantId);
 
-		when(service.getWinnerOfDay(day)).thenReturn(dtoToReturn);
+		when(service.getWinnerOfDay(any(Date.class))).thenReturn(dtoToReturn);
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnerOfDay(day);
+		ResponseEntity responseEntity = controller.getWinnerOfDay();
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		WinnerDTO body = (WinnerDTO) responseEntity.getBody();
@@ -60,10 +60,10 @@ public class WinnerRestControllerTest_GetWinnerOfDay {
 
 	@Test
 	public void get_GivenUnknownIdShouldReturnNotFoundStatus() throws ReadException {
-		when(service.getWinnerOfDay(day)).thenThrow(new ReadException(ReadExceptionMessageEnum.NOT_FOUND));
+		when(service.getWinnerOfDay(any(Date.class))).thenThrow(new ReadException(ReadExceptionMessageEnum.NOT_FOUND));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnerOfDay(day);
+		ResponseEntity responseEntity = controller.getWinnerOfDay();
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 
@@ -74,10 +74,10 @@ public class WinnerRestControllerTest_GetWinnerOfDay {
 
 	@Test
 	public void get_GivenNullIdShouldReturnBadRequestStatus() throws ReadException {
-		when(service.getWinnerOfDay(null)).thenThrow(new ReadException(ReadExceptionMessageEnum.ID_NULL_EXCEPTION));
+		when(service.getWinnerOfDay(any(Date.class))).thenThrow(new ReadException(ReadExceptionMessageEnum.ID_NULL_EXCEPTION));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnerOfDay(null);
+		ResponseEntity responseEntity = controller.getWinnerOfDay();
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status for null ID", httpStatus, equalTo(HttpStatus.BAD_REQUEST));
@@ -90,7 +90,7 @@ public class WinnerRestControllerTest_GetWinnerOfDay {
 				.thenThrow(new ReadException(ReadExceptionMessageEnum.UNEXPECTED_EXCEPTION));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnerOfDay(null);
+		ResponseEntity responseEntity = controller.getWinnerOfDay();
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.INTERNAL_SERVER_ERROR));
@@ -102,7 +102,7 @@ public class WinnerRestControllerTest_GetWinnerOfDay {
 		doThrow(new RuntimeException()).when(service).getWinnerOfDay(any(Date.class));
 
 		@SuppressWarnings("rawtypes")
-		ResponseEntity responseEntity = controller.getWinnerOfDay(null);
+		ResponseEntity responseEntity = controller.getWinnerOfDay();
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.INTERNAL_SERVER_ERROR));

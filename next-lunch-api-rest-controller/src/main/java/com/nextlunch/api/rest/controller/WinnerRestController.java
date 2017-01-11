@@ -1,15 +1,13 @@
 package com.nextlunch.api.rest.controller;
 
-import java.util.Date;
-
 import org.springframework.http.ResponseEntity;
 
 public interface WinnerRestController {
 
 	@SuppressWarnings("rawtypes")
-	ResponseEntity getWinnerOfDay(Date day);
+	ResponseEntity getWinnerOfDay();
 	
 	@SuppressWarnings("rawtypes")
-	ResponseEntity getWinnersOfWeek(Date day);
+	ResponseEntity getWinnersOfWeek();
 	
 }

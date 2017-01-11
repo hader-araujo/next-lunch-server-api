@@ -1,5 +1,6 @@
 package com.nextlunch.api.rest.controller;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -40,9 +41,10 @@ public class WinnerRestControllerImpl implements WinnerRestController {
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/day/{day}", method = RequestMethod.GET)
-	public ResponseEntity getWinnerOfDay(@PathVariable("day") @DateTimeFormat(pattern = "yyyy-MM-dd") Date day) {
+	@RequestMapping(value = "/day", method = RequestMethod.GET)
+	public ResponseEntity getWinnerOfDay() {
 		try {
+			Date day = Calendar.getInstance().getTime();
 			
 			WinnerDTO dto = service.getWinnerOfDay(day);
 
@@ -69,9 +71,10 @@ public class WinnerRestControllerImpl implements WinnerRestController {
 
 	@Override
 	@SuppressWarnings("rawtypes")
-	@RequestMapping(value = "/week/{day}", method = RequestMethod.GET)
-	public ResponseEntity getWinnersOfWeek(@PathVariable("day") @DateTimeFormat(pattern = "yyyy-MM-dd") Date day) {
+	@RequestMapping(value = "/week", method = RequestMethod.GET)
+	public ResponseEntity getWinnersOfWeek() {
 		try {
+			Date day = Calendar.getInstance().getTime();
 			
 			List<WinnerDTO> dto = service.getWinnersOfWeek(day);
 
