@@ -65,8 +65,8 @@ public class VoteServiceImpl implements VoteService {
 		middleDay.set(Calendar.MILLISECOND, 0);
 	}
 
-	private boolean isBeforeMiddleDay() {
-		return Calendar.getInstance().before(middleDay);
+	private boolean isBeforeMiddleDay(Calendar calendar) {
+		return calendar.before(middleDay);
 	}
 
 	@Override
@@ -93,7 +93,7 @@ public class VoteServiceImpl implements VoteService {
 			List<WinnerDTO> winnerList = sortedMap.entrySet().stream()
 					.filter(p -> p.getValue() == sortedMap.values().iterator().next())
 					.map(f -> new WinnerDTO(f.getKey().getId(), f.getKey().getName(), f.getValue(),
-							isBeforeMiddleDay()))
+							isBeforeMiddleDay(Calendar.getInstance())))
 					.sorted(Comparator.comparing(WinnerDTO::getRestaurantName)).collect(Collectors.toList());
 
 			return winnerList.isEmpty() ? null : winnerList.get(0);
@@ -154,9 +154,13 @@ public class VoteServiceImpl implements VoteService {
 
 	@Override
 	@Transactional(readOnly = false)
-	public VoteDTO vote(VoteDTO voteDTO) throws CreateException {
+	public VoteDTO vote(VoteDTO voteDTO, Calendar calendar) throws CreateException {
 		try {
-
+			
+			if (! isBeforeMiddleDay(calendar)){
+				throw new CreateException(CreateExceptionMessageEnum.VOTE_AFTER_MIDDLE_DAY_EXCEPTION);
+			}
+			
 			Calendar c = Calendar.getInstance();
 			c.set(Calendar.HOUR_OF_DAY, 0);
 			c.set(Calendar.MINUTE, 0);

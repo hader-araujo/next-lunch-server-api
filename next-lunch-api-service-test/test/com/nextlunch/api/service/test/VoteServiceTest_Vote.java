@@ -72,7 +72,7 @@ public class VoteServiceTest_Vote {
 		thrown.expect(CreateException.class);
 		thrown.expectMessage(CreateExceptionMessageEnum.VOTE_SAME_WEEK_EXCEPTION.name());
 
-		boolean[] first = new boolean[]{true};
+		boolean[] first = new boolean[] { true };
 
 		getDaysOfWeek(day).forEach(c -> {
 			if (first[0]) {
@@ -86,15 +86,21 @@ public class VoteServiceTest_Vote {
 				vote.setDay(c);
 				when(repository.findByDay(c)).thenReturn(Arrays.asList(vote));
 				first[0] = false;
-			}else{
+			} else {
 				when(repository.findByDay(c)).thenReturn(null);
 			}
 		});
 
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 8);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
 		VoteDTO voteDTO = new VoteDTO();
 		voteDTO.setRestaurantId(restaurantId);
 		voteDTO.setUserId(userId);
-		service.vote(voteDTO);
+		service.vote(voteDTO, cal);
 	}
 
 	@Test
@@ -121,10 +127,16 @@ public class VoteServiceTest_Vote {
 
 		getDaysOfWeek(day).forEach(c -> when(repository.findByDay(c)).thenReturn(null));
 
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 8);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
 		VoteDTO voteDTO = new VoteDTO();
 		voteDTO.setRestaurantId(restaurantId);
 		voteDTO.setUserId(userId);
-		VoteDTO dto = service.vote(voteDTO);
+		VoteDTO dto = service.vote(voteDTO, cal);
 
 		verify(repository, times(1)).saveAndFlush(vote);
 
@@ -140,10 +152,16 @@ public class VoteServiceTest_Vote {
 
 		when(repository.findAll()).thenThrow(new RuntimeException());
 
+		Calendar cal = Calendar.getInstance();
+		cal.set(Calendar.HOUR_OF_DAY, 8);
+		cal.set(Calendar.MINUTE, 0);
+		cal.set(Calendar.SECOND, 0);
+		cal.set(Calendar.MILLISECOND, 0);
+
 		VoteDTO voteDTO = new VoteDTO();
 		voteDTO.setRestaurantId(restaurantId);
 		voteDTO.setUserId(userId);
-		service.vote(voteDTO);
+		service.vote(voteDTO, cal);
 	}
 
 	private List<Date> getDaysOfWeek(Date day) {

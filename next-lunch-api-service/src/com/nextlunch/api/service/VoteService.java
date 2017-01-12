@@ -1,5 +1,6 @@
 package com.nextlunch.api.service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public interface VoteService {
 
 	List<WinnerDTO> getWinnersOfWeek(Date day) throws ReadException;
 
-	VoteDTO vote(VoteDTO voteDTO) throws CreateException;
+	VoteDTO vote(VoteDTO voteDTO, Calendar calendar) throws CreateException;
 	
 	boolean hasVote(GetVoteDTO getVoteDTO) throws ReadException;
 }

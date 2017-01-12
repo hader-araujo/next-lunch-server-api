@@ -49,7 +49,7 @@ public class VoteRestControllerImpl implements VoteRestController {
 				return ResponseEntity.badRequest()
 						.body(result.getAllErrors().stream().map(error -> error.getCodes()[0]).toArray());
 			}
-			VoteDTO dto = service.vote(voteDTO);
+			VoteDTO dto = service.vote(voteDTO, Calendar.getInstance());
 
 			return new ResponseEntity<>(dto, HttpStatus.CREATED);
 

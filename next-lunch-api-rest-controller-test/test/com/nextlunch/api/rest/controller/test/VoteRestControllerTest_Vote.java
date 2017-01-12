@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import org.junit.Before;
@@ -61,7 +62,7 @@ public class VoteRestControllerTest_Vote {
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.CREATED));
 
-		verify(service, times(1)).vote(dto);
+		verify(service, times(1)).vote(any(VoteDTO.class), any(Calendar.class));
 	}
 
 	@Test
@@ -83,13 +84,13 @@ public class VoteRestControllerTest_Vote {
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.BAD_REQUEST));
 		assertThat("Missing error code", Arrays.asList(body), hasItem(equalTo(errorCodeNameSize)));
 
-		verify(service, times(0)).vote(any(VoteDTO.class));
+		verify(service, times(0)).vote(any(VoteDTO.class), any(Calendar.class));
 	}
 
 	@Test
 	public void vote_GivenExceptionOnServiceShoudReturnInternalServerErrorStatus() throws CreateException {
 		doThrow(new CreateException(CreateExceptionMessageEnum.UNEXPECTED_EXCEPTION)).when(service)
-				.vote(any(VoteDTO.class));
+				.vote(any(VoteDTO.class), any(Calendar.class));
 		when(result.hasErrors()).thenReturn(false);
 
 		@SuppressWarnings("rawtypes")
@@ -97,7 +98,7 @@ public class VoteRestControllerTest_Vote {
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.INTERNAL_SERVER_ERROR));
-		verify(service, times(1)).vote(any(VoteDTO.class));
+		verify(service, times(1)).vote(any(VoteDTO.class), any(Calendar.class));
 	}
 
 	@Test
@@ -109,6 +110,6 @@ public class VoteRestControllerTest_Vote {
 
 		HttpStatus httpStatus = responseEntity.getStatusCode();
 		assertThat("Wrong HTTP status", httpStatus, equalTo(HttpStatus.INTERNAL_SERVER_ERROR));
-		verify(service, times(0)).vote(any(VoteDTO.class));
+		verify(service, times(0)).vote(any(VoteDTO.class), any(Calendar.class));
 	}
 }
