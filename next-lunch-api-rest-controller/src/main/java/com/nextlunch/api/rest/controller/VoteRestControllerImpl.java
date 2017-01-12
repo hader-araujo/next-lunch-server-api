@@ -22,6 +22,7 @@ import com.nextlunch.api.service.dto.GetVoteDTO;
 import com.nextlunch.api.service.dto.VoteDTO;
 import com.nextlunch.api.service.exception.CreateException;
 import com.nextlunch.api.service.exception.ReadException;
+import com.nextlunch.api.service.exception.enums.CreateExceptionMessageEnum;
 
 @RestController
 @CrossOrigin(origins = "http://localhost")
@@ -54,6 +55,9 @@ public class VoteRestControllerImpl implements VoteRestController {
 			return new ResponseEntity<>(dto, HttpStatus.CREATED);
 
 		} catch (CreateException e) {
+			if (e.getMessage().equals(CreateExceptionMessageEnum.VOTE_AFTER_MIDDLE_DAY_EXCEPTION.name())){
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		} catch (Exception e) {
 			log.error("vote::Unexpected error on rest controller", e);
