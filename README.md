@@ -2,6 +2,8 @@
 
 ## Java Spring REST API
 
+Server side of https://github.com/hader-araujo/react-next-lunch
+
 ## Requirements
 * _Maven 3_ (https://maven.apache.org/download.cgi) 
 * _Java 1.8_ (http://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html)
@@ -14,8 +16,3 @@
 
 ## To run the automated tests
 * mvn test
-
-## To access the application
-  + url: http://localhost:8080/nextlunchapi/user
-  + url: http://localhost:8080/nextlunchapi/restaurant
-  + TODO - add the other url
