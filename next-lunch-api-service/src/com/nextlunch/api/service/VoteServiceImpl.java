@@ -110,11 +110,11 @@ public class VoteServiceImpl implements VoteService {
 	private List<Date> getDaysOfWeek(Date day) {
 		Calendar c = Calendar.getInstance();
 		c.setTime(day);
-		int delta = - c.get(Calendar.DAY_OF_WEEK);
-		c.add(Calendar.DAY_OF_MONTH, delta );
+		int delta = c.get(Calendar.DAY_OF_WEEK);
+		c.add(Calendar.DAY_OF_MONTH, - delta );
 		 
 		List<Date> dateList = new ArrayList<>();
-		while (dateList.size() < 7) {
+		while (dateList.size() < delta - 1) {
 			c.set(Calendar.HOUR_OF_DAY, 0);
 			c.set(Calendar.MINUTE, 0);
 			c.set(Calendar.SECOND, 0);

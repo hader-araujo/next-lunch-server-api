@@ -65,7 +65,7 @@ public class VoteServiceTest_GetWinnersOfWeek {
 		Calendar cal = Calendar.getInstance();
 		cal.set(Calendar.YEAR, 2017);
 		cal.set(Calendar.MONTH, Calendar.JANUARY);
-		cal.set(Calendar.DAY_OF_MONTH, 15);
+		cal.set(Calendar.DAY_OF_MONTH, 19);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
@@ -90,18 +90,23 @@ public class VoteServiceTest_GetWinnersOfWeek {
 		vote = new Vote();
 		vote.setRestaurant(restaurant);
 		vote.setUser(user);
+		vote.setDay(day18);
+		when(repository.findByDay(day18)).thenReturn(Arrays.asList(vote));
+		
+		vote = new Vote();
+		vote.setRestaurant(restaurant);
+		vote.setUser(user);
 		vote.setDay(day19);
 		when(repository.findByDay(day19)).thenReturn(Arrays.asList(vote));
 
 		when(repository.findByDay(day16)).thenReturn(null);
 		when(repository.findByDay(day17)).thenReturn(null);
-		when(repository.findByDay(day18)).thenReturn(null);
 		when(repository.findByDay(day20)).thenReturn(null);
 		when(repository.findByDay(day21)).thenReturn(null);
 
 		List<WinnerDTO> dtoList = service.getWinnersOfWeek(day);
 
-		verify(repository, times(7)).findByDay(any(Date.class));
+		verify(repository, times(4)).findByDay(any(Date.class));
 		assertThat("The list should has 2 elements", dtoList, hasSize(2));
 
 		assertThat("The return is wrong", dtoList, hasItem(hasProperty(propertyQuantity, equalTo(1L))));
@@ -121,7 +126,7 @@ public class VoteServiceTest_GetWinnersOfWeek {
 
 		List<WinnerDTO> dtoList = service.getWinnersOfWeek(day);
 
-		verify(repository, times(7)).findByDay(any(Date.class));
+		verify(repository, times(4)).findByDay(any(Date.class));
 		assertThat("DTO list should be empty", dtoList, hasSize(0));
 	}
 
