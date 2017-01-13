@@ -17,7 +17,7 @@ create table VOTES(
 	USER_ID int,
 	DAY date,
 	primary key (ID),
-	constraint VOTE_UNIQUE unique (RESTAURANT_ID, USER_ID)
+	constraint VOTE_UNIQUE unique (RESTAURANT_ID, USER_ID, DAY)
 );
 
 alter table VOTES add constraint FK_RESTAURANT foreign key (RESTAURANT_ID) references RESTAURANTS;

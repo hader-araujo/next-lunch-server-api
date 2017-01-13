@@ -35,8 +35,6 @@ public class VoteServiceImpl implements VoteService {
 
 	private static final Logger log = LogManager.getLogger(VoteServiceImpl.class.getName());
 
-	private final Calendar middleDay;
-
 	private VoteJpaRepository repository;
 	private RestaurantService restaurantService;
 	private UserService userService;
@@ -57,15 +55,16 @@ public class VoteServiceImpl implements VoteService {
 		this.repository = repository;
 		this.restaurantService = restaurantService;
 		this.userService = userService;
+		
+	}
 
-		middleDay = Calendar.getInstance();
+	private boolean isBeforeMiddleDay(Calendar calendar) {
+		Calendar middleDay = Calendar.getInstance();
 		middleDay.set(Calendar.HOUR_OF_DAY, 12);
 		middleDay.set(Calendar.MINUTE, 0);
 		middleDay.set(Calendar.SECOND, 0);
 		middleDay.set(Calendar.MILLISECOND, 0);
-	}
-
-	private boolean isBeforeMiddleDay(Calendar calendar) {
+		
 		return calendar.before(middleDay);
 	}
 
